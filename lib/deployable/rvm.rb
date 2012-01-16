@@ -10,5 +10,11 @@ Capistrano::Configuration.instance(true).load do
     task :set_rvmrc, :roles => [:app] do
       put "rvm use #{rvm_ruby_string}", "#{release_path}/.rvmrc"
     end
+    
+    desc "Create the gemset"
+    task :create_gemset, :roles => [:app] do
+      ruby,gemset = rvm_ruby_string.split("@")
+      run "rvm gemset create #{gemset}"
+    end
   end
 end
