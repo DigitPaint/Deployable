@@ -64,6 +64,8 @@
 # within the file.
 # For instance, the template above takes advantage of Capistrano CLI
 # to ask for a MySQL database password instead of hard coding it into the template.
+require 'ostruct'
+
 Capistrano::Configuration.instance.load do
   namespace :database do
     desc <<-DESC
@@ -84,7 +86,7 @@ Capistrano::Configuration.instance.load do
 db: &db
   adapter: mysql2
   username: <%= config[:username] %>
-  password: <%= Capistrano::CLI.ui.ask "Database password: " %>
+  password: <%= Capistrano::CLI.ui.ask("Database password: ") %>
   host: <%= config[:host] %>
 
 development:
@@ -105,7 +107,7 @@ EOF
 
       config = ERB.new(template)
 
-      put config.result(OpenStruct.new(:config => :database_config).send(:binding)), "#{deploy_to}/database.yml"
+      put config.result(OpenStruct.new(:config => database_config).send(:binding)), "#{deploy_to}/database.yml"
     end
 
     desc <<-DESC
