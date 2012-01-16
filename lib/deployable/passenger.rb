@@ -11,7 +11,7 @@ Capistrano::Configuration.instance(true).load do
       # do nothing
     end
 
-    task stop, :roles => [:app] do
+    task :stop, :roles => [:app] do
       # do nothing
     end
     
