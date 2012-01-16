@@ -65,21 +65,20 @@
 # For instance, the template above takes advantage of Capistrano CLI
 # to ask for a MySQL database password instead of hard coding it into the template.
 Capistrano::Configuration.instance.load do
-    namespace :database do
+  namespace :database do
+    desc <<-DESC
+      Creates the database.yml configuration file in deploy path.
+      It asks for a database password.
 
-      desc <<-DESC
-        Creates the database.yml configuration file in deploy path.
-        It asks for a database password.
+      By default, this task uses a template unless a template \
+      called database.yml.erb is found either is :template_dir \
+      or /config/deploy folders. The default template matches \
+      the template for config/database.yml file shipped with Rails.
 
-        By default, this task uses a template unless a template \
-        called database.yml.erb is found either is :template_dir \
-        or /config/deploy folders. The default template matches \
-        the template for config/database.yml file shipped with Rails.
+    DESC
+    task :setup, :except => { :no_release => true } do
 
-      DESC
-      task :setup, :except => { :no_release => true } do
-
-        default_template = <<-EOF
+      default_template = <<-EOF
 # MySQL (default setup).  Versions 4.1 and 5.0 are recommended.
 
 db: &db
@@ -101,22 +100,20 @@ production:
   database: <%= config[:production] %>
 EOF
 
-        location = fetch(:template_dir, "config/deploy") + '/database.yml.erb'
-        template = File.file?(location) ? File.read(location) : default_template
+      location = fetch(:template_dir, "config/deploy") + '/database.yml.erb'
+      template = File.file?(location) ? File.read(location) : default_template
 
-        config = ERB.new(template)
+      config = ERB.new(template)
 
-        put config.result(OpenStruct.new(:config => :database_config).send(:binding)), "#{deploy_to}/database.yml"
-      end
-
-      desc <<-DESC
-        Copies the setup database.yml to the just deployed release.
-      DESC
-      task :copy_config_to_release, :except => { :no_release => true } do
-        run "cp #{deploy_to}/database.yml #{release_path}/config/database.yml"
-      end
-
+      put config.result(OpenStruct.new(:config => :database_config).send(:binding)), "#{deploy_to}/database.yml"
     end
-  end
 
+    desc <<-DESC
+      Copies the setup database.yml to the just deployed release.
+    DESC
+    task :copy_config_to_release, :except => { :no_release => true } do
+      run "cp #{deploy_to}/database.yml #{release_path}/config/database.yml"
+    end
+
+  end
 end
