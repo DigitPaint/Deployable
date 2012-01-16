@@ -1,5 +1,8 @@
 require "deployable/version"
 
+unless Capistrano::Configuration.respond_to?(:instance)
+  abort "This extension requires Capistrano 2"
+end
+
 module Deployable
-  # Your code goes here...
 end
