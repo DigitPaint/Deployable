@@ -107,7 +107,7 @@ EOF
 
       config = ERB.new(template)
 
-      put config.result(OpenStruct.new(:config => database_config).send(:binding)), "#{deploy_to}/database.yml"
+      put config.result(OpenStruct.new(:config => fetch(:database_config)).send(:binding)), "#{deploy_to}/database.yml"
     end
 
     desc <<-DESC
