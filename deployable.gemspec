@@ -5,11 +5,11 @@ require "deployable/version"
 Gem::Specification.new do |s|
   s.name        = "deployable"
   s.version     = Deployable::VERSION
-  s.authors     = ["Flurin Egger"]
-  s.email       = ["flurin@digitpaint.nl"]
+  s.authors     = ["Digitpaint", "Flurin Egger"]
+  s.email       = ["info@digitpaint.nl", "flurin@digitpaint.nl"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{A collection of handy capistrano deploy recipes}
+  s.description = s.summary
 
   s.rubyforge_project = "deployable"
 
