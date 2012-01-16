@@ -105,9 +105,9 @@ EOF
       location = fetch(:template_dir, "config/deploy") + '/database.yml.erb'
       template = File.file?(location) ? File.read(location) : default_template
 
-      config = ERB.new(template)
 
-      put config.result(OpenStruct.new(:config => fetch(:database_config)).send(:binding)), "#{deploy_to}/database.yml"
+      view = ERB.new(template)
+      put view.result(OpenStruct.new(:config => fetch(:database_config)).send(:binding)), "#{deploy_to}/database.yml"
     end
 
     desc <<-DESC
