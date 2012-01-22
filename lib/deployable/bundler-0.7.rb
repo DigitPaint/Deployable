@@ -14,5 +14,10 @@ Capistrano::Configuration.instance(true).load do
       run "cd #{release_path}/vendor/bundler_gems; ln -fs #{deploy_to}/shared/bundler_gems/specifications"
       run "cd #{release_path}; gem bundle --cached"
     end
+    
+    desc "Install bundler"
+    task :install, :roles => [:app] do
+      run "gem install bundler --version=0.7.2"
+    end    
   end
 end
