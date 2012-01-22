@@ -8,7 +8,7 @@ require 'yaml'
 Capistrano::Configuration.instance(true).load do
   namespace :passenger_standalone do
     desc "Setup server.yml in the 'deploy_to' directory"
-    task :setup_server_config, :roles => [:app] do    
+    task :setup, :roles => [:app] do    
       config = fetch(:passenger_standalone)
       config = deep_stringify_keys(config)
       unless config["rvm"] && config["rvm"]["rvm_ruby_string"]
