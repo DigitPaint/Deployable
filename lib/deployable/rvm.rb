@@ -1,4 +1,17 @@
 # = RVM related tasks
+# 
+# These tasks make working with RVM and gemsits a little bit easier. 
+#
+# == Usage
+# We want to be able to set the defined RVMRC in the deploy script
+# on the server too. To achieve this we have to set the RVMRC 
+# after every deploy and we have to trust the just created RVMRC too.
+#
+# == Example
+# require 'deployable/rvm'
+# before "deploy:setup", "rvm:create_gemset"
+# after "deploy:update_code", "rvm:set_rvmrc", "rvm:trust_rvmrc"
+# 
 Capistrano::Configuration.instance(true).load do
   namespace :rvm do
     desc "Trust the RVMRC in release_path"
