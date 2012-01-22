@@ -29,7 +29,7 @@
 # By default, this script creates the database.yml below. 
 #
 # If you want to overwrite the default template, simply create a custom Erb template
-# called <tt>database.yml.erb</tt> and save it into <tt>config/deploy</tt> folder.
+# called <tt>database.yml.erb</tt> and save it into <tt>config/deploy/templates</tt> folder.
 # 
 # Although the name of the file can't be changed, you can customize the directory
 # where it is stored defining a variable called <tt>:template_dir</tt>.
@@ -84,7 +84,7 @@ Capistrano::Configuration.instance.load do
 # MySQL (default setup).  Versions 4.1 and 5.0 are recommended.
 
 db: &db
-  adapter: mysql2
+  adapter: <%= config[:adapter] || "mysql2" %>
   username: <%= config[:username] %>
   password: <%= Capistrano::CLI.ui.ask("Database password: ") %>
   host: <%= config[:host] %>
@@ -102,7 +102,7 @@ production:
   database: <%= config[:production] %>
 EOF
 
-      location = fetch(:template_dir, "config/deploy") + '/database.yml.erb'
+      location = fetch(:template_dir, "config/deploy/templates") + '/database.yml.erb'
       template = File.file?(location) ? File.read(location) : default_template
 
 
