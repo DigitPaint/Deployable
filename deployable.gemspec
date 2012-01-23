@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = Deployable::VERSION
   s.authors     = ["Digitpaint", "Flurin Egger"]
   s.email       = ["info@digitpaint.nl", "flurin@digitpaint.nl"]
-  s.homepage    = ""
-  s.summary     = %q{A collection of handy capistrano deploy recipes}
-  s.description = s.summary
+  s.homepage    = "https://github.com/DigitPaint/Deployable"
+  s.summary     = %q{A collection of handy capistrano tasks and recipes}
+  s.description = %q{This library contains commonly used capistrano tasks, a couple of default recipes and example configurations.}
 
   s.rubyforge_project = "deployable"
 
