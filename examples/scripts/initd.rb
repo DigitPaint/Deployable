@@ -40,46 +40,46 @@ APPLICATIONS_PATH = USER_HOME_PATH + "/applications/"
 # Main start routine.
 def run!
   command = ARGV.first
-  available_commands = %w{start stop list}
+  available_commands = %w{start stop list info}
   raise "Use one of #{available_commands.join("|")} as first argument" unless available_commands.include?(command)
 
   applications = Dir.glob("#{APPLICATIONS_PATH}*/*").inject({}){|mem, dir| parts = dir.split("/"); mem[parts[-2]] ||= []; mem[parts[-2]] << parts[-1]; mem}
 
+
   if command == "list"
-    str = "All applications for #{USER}"
-    puts str
-    puts "=" * str.size
-    
-    applications.each do |application, stages|
-      puts "#{application} (#{APPLICATIONS_PATH}/#{application})"
-      stages.each do |stage|
-        puts "    - #{stage}"
+    head = "| " + "Application".ljust(60) + " | " + "Stage".ljust(20) + " | " + "Port".ljust(6) + " | "  + "RVM".ljust(80) + " |"
+    puts "-"  * head.size
+    puts head
+    puts "-"  * head.size    
+  end
+
+  if application = ARGV[1]
+    unless applications.has_key?(application)
+      raise "Can't find application #{application}"
+    end
+
+    if stage = ARGV[2]
+      unless applications[application].include?(stage)
+        raise "Stage #{stage} not found for application #{application}"
+      end
+      Application.new(application,stage).run!(command)
+    else
+      applications[application].each do |stage|
+        Application.new(application,stage).run!(command)
       end
     end
   else
-    if application = ARGV[1]
-      unless applications.has_key?(application)
-        raise "Can't find application #{application}"
-      end
-
-      if stage = ARGV[2]
-        unless applications[application].include?(stage)
-          raise "Stage #{stage} not found for application #{application}"
-        end
-        Application.new(application,stage).start_or_stop!(command)
-      else
-        applications[application].each do |stage|
-          Application.new(application,stage).start_or_stop!(command)
-        end
-      end
-    else
-      applications.each do |application, stages|
-        stages.each do |stage|
-          Application.new(application,stage).start_or_stop!(command)
-        end
+    applications.sort.each do |application, stages|
+      stages.each do |stage|
+        Application.new(application,stage).run!(command)
       end
     end
   end
+  
+  if command == "list"
+    puts "-" * head.size
+  end
+
   true
 end
 
@@ -92,20 +92,38 @@ class Application
   def initialize(application_name,stage)
     @path = Pathname.new("#{APPLICATIONS_PATH}#{application_name}/#{stage}")
     @name = application_name
-    @stage = start_or_stop
+    @stage = stage
     
     # Sanity check!
     raise "No server.yml found in '#{@path}'" unless File.exist?(@path +"server.yml")
     
     # Load config
-    @config = YAML.load(File.read((@path +"server.yml").to_s))
+    @config = YAML.load(File.read((@path +"server.yml").to_s))    
   end
   
-  def start_or_stop!(command)
+  def run!(command)
     case command
     when "start" then self.start!
     when "stop"  then self.stop!
+    when "info" then self.info!
+    when "list" then self.list!
     end    
+  end
+  
+  def info!
+    fw = 6
+    say "#{self.name} - #{self.stage}"
+    say "  " + "Path".ljust(fw) + ": " + self.path.to_s
+    say "  " + "RVM".ljust(fw) + ": " + self.config["rvm"]["rvm_ruby_string"]
+    say "  " + "Port".ljust(fw) + ": " + self.config["passenger"]["port"]
+  end
+  
+  def list!
+    say "| " + field(self.name, 60) + " | " + field(self.stage, 20) + " | " + field(self.config["passenger"]["port"],6) + " | "  + field(self.config["rvm"]["rvm_ruby_string"], 80) + " |"
+  end
+  
+  def field(txt, len)
+    txt.to_s.ljust(len)[0,len]
   end
   
   def start!
@@ -121,7 +139,7 @@ class Application
     run_callback(:start, :before)
     
     # Start the server
-    puts rvm_execute(self.config, "passenger start #{self.path + "current"} --user #{user} --port #{server_config['passenger']['port']} --environment production -d --pid-file #{self.path + "passenger.pid"}")
+    puts rvm_execute(self.config, "passenger start #{self.path + "current"} --user #{USER} --port #{self.config['passenger']['port']} --environment production -d --pid-file #{self.path + "passenger.pid"}")
     
     # Run the after start callback
     run_callback(:start, :after)    
@@ -146,7 +164,7 @@ class Application
   
   protected
   
-  def callback(key, time)
+  def run_callback(key, time)
     return unless self.config.has_key?("callbacks")
     
     callbacks = self.config["callbacks"]
@@ -182,9 +200,9 @@ begin
   if run!
     puts "Done!"
   else
-    puts "Usage: passenger-standalone {start|stop|list} [application] [stage]"
+    puts "Usage: passenger-standalone {start|stop|info} [application] [stage]"
   end
 rescue StandardError => e
   puts "ERROR: #{e.message}"
-  puts "Usage: passenger-standalone {start|stop|list} [application] [stage]"
+  puts "Usage: passenger-standalone {start|stop|info} [application] [stage]"
 end
