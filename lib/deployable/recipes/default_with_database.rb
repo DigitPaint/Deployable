@@ -8,33 +8,35 @@
 #
 # - Database config
 
-# Load multistage
-require 'capistrano/ext/multistage'
+Capistrano::Configuration.instance(true).load do
+  # Load multistage
+  require 'capistrano/ext/multistage'
 
-# Load RVM
-require 'rvm/capistrano'
+  # Load RVM
+  require 'rvm/capistrano'
 
-# Overwrite the start/stop/restart tasks
-require 'deployable/passenger'
+  # Overwrite the start/stop/restart tasks
+  require 'deployable/passenger'
 
-# Add RVM specific tools
-require "deployable/rvm"
-before "deploy:setup", "rvm:create_gemset"
-after "deploy:finalize_update", "rvm:set_rvmrc", "rvm:trust_rvmrc"
+  # Add RVM specific tools
+  require "deployable/rvm"
+  before "deploy:setup", "rvm:create_gemset"
+  after "deploy:finalize_update", "rvm:set_rvmrc", "rvm:trust_rvmrc"
 
-# Enable bundling
-require 'bundler/capistrano'
-require "deployable/bundle"
-after "rvm:trust_rvmrc", "bundle:config"
+  # Enable bundling
+  require 'bundler/capistrano'
+  require "deployable/bundle"
+  after "rvm:trust_rvmrc", "bundle:config"
 
-# Handle database config
-require "deployable/database"
-after "deploy:setup", "database:setup"
-after "deploy:update_code", "database:copy_config_to_release"
+  # Handle database config
+  require "deployable/database"
+  after "deploy:setup", "database:setup"
+  after "deploy:update_code", "database:copy_config_to_release"
 
-# Passenger standalone setup
-require "deployable/passenger_standalone"
-after "deploy:setup", "passenger_standalone:setup"
+  # Passenger standalone setup
+  require "deployable/passenger_standalone"
+  after "deploy:setup", "passenger_standalone:setup"
 
-# Cleanup
-after "deploy", "deploy:cleanup"
+  # Cleanup
+  after "deploy", "deploy:cleanup"
+end
