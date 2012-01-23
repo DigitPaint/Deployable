@@ -7,7 +7,7 @@ After years of copying our deploy script from one application to another it was 
 1. Add the `deployable` gem to your gemfile:
 
         group :development do
-          gem "deployable", ">=0.0.2", :require => false
+          gem "deployable"
         end
 
 2. Config your deploy script (see the `examples/config` directory for some inspiration)
