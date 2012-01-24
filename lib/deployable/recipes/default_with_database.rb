@@ -41,6 +41,10 @@ Capistrano::Configuration.instance(true).load do
   require "deployable/config_files"
   after "deploy:setup", "config_files:setup"
   after "deploy:update_code", "config_files:install"
+  
+  # Directories support
+  require 'deployable/directories'
+  after "deploy:update_code", "directories:create"
 
   # Cleanup
   after "deploy", "deploy:cleanup"
