@@ -1,3 +1,7 @@
+## 0.0.3 (January 24th, 2012)
+
+* Added directories module
+
 ## 0.0.2 (January 24th, 2012)
 
 * Added license
