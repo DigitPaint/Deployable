@@ -37,6 +37,11 @@ Capistrano::Configuration.instance(true).load do
   require "deployable/passenger_standalone"
   after "deploy:setup", "passenger_standalone:setup"
 
+  # Config files support
+  require "deployable/config_files"
+  after "deploy:setup", "config_files:setup"
+  after "deploy:update_code", "config_files:install"
+
   # Cleanup
   after "deploy", "deploy:cleanup"
 end
