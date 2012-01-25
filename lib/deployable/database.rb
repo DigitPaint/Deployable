@@ -64,7 +64,8 @@
 # within the file.
 # For instance, the template above takes advantage of Capistrano CLI
 # to ask for a MySQL database password instead of hard coding it into the template.
-require 'ostruct'
+
+require "deployable/helpers/erb_template"
 
 Capistrano::Configuration.instance.load do
   namespace :database do
@@ -105,9 +106,7 @@ EOF
       location = fetch(:template_dir, "config/deploy/templates") + '/database.yml.erb'
       template = File.file?(location) ? File.read(location) : default_template
 
-
-      view = ERB.new(template)
-      put view.result(OpenStruct.new(:config => fetch(:database_config)).send(:binding)), "#{deploy_to}/database.yml"
+      put Deployable::ErbTemplate.new(template).render(fetch(:database_config, {})), "#{deploy_to}/database.yml"
     end
 
     desc <<-DESC
