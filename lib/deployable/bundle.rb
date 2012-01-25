@@ -21,22 +21,20 @@ Capistrano::Configuration.instance(true).load do
   namespace :bundle do
     desc "Setup bundler config on server"
     task :config do
-      if conf = fetch(:bundle_config)
-        conf.each do |k1,h|
-          h.each do |k2,v|
-            bundle_cmd     = fetch(:bundle_cmd, "bundle")
-            bundle_dir     = fetch(:bundle_dir, File.join(fetch(:shared_path), 'bundle'))          
+      fetch(:bundle_config, {}).each do |k1,h|
+        h.each do |k2,v|
+          bundle_cmd     = fetch(:bundle_cmd, "bundle")
+          bundle_dir     = fetch(:bundle_dir, File.join(fetch(:shared_path), 'bundle'))          
           
-            current_release = fetch(:current_release)
-            if current_release.to_s.empty?
-              raise ::Capistrano::CommandError.new("Cannot detect current release path - make sure you have deployed at least once.")
-            end
-                    
-            args = ["#{k1}.#{k2} #{v}"]
-            args << "--path #{bundle_dir}" unless bundle_dir.to_s.empty?
-          
-            run "cd #{current_release} && #{bundle_cmd} config #{args.join(" ")}"
+          current_release = fetch(:current_release)
+          if current_release.to_s.empty?
+            raise ::Capistrano::CommandError.new("Cannot detect current release path - make sure you have deployed at least once.")
           end
+                    
+          args = ["#{k1}.#{k2} #{v}"]
+          args << "--path #{bundle_dir}" unless bundle_dir.to_s.empty?
+          
+          run "cd #{current_release} && #{bundle_cmd} config #{args.join(" ")}"
         end
       end
     end
