@@ -1,3 +1,7 @@
+## 0.0.4 (January 25th, 2012)
+
+* Don't fail if a certain config isn't set, just ignore it.
+
 ## 0.0.3 (January 24th, 2012)
 
 * Added directories module
