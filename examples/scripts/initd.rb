@@ -139,7 +139,14 @@ class Application
     run_callback(:start, :before)
     
     # Start the server
-    puts rvm_execute(self.config, "passenger start #{self.path + "current"} --user #{USER} --port #{self.config['passenger']['port']} --environment production -d --pid-file #{self.path + "passenger.pid"}")
+    options = []
+    options << "--user #{USER}"
+    options << "--port #{self.config['passenger']['port']}"
+    options << "--environment production"
+    options << "--daemonize"
+    options << "--pid-file #{self.path + "passenger.pid"}"
+    options << "--log-file /dev/null"
+    puts rvm_execute(self.config, "passenger start #{self.path + "current"} #{options.join(" ")}")
     
     # Run the after start callback
     run_callback(:start, :after)    
