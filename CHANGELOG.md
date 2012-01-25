@@ -1,3 +1,12 @@
+## 0.0.6
+
+* Updated initrd script for passenger to nog log
+* Added custom ERB template handler so it works in ruby 1.9.x and 1.8.x
+
+## 0.0.5 (January 25th, 2012)
+
+* Don't depend on highline, let the environment decide
+
 ## 0.0.4 (January 25th, 2012)
 
 * Don't fail if a certain config isn't set, just ignore it.
