@@ -25,5 +25,5 @@ Gem::Specification.new do |s|
   
   # This may be deleted in future versions. Needed because in older
   # rubies you get Abort Trap 6 errors in gem 
-  s.add_runtime_dependency "highline", "1.5.2"
+  # s.add_runtime_dependency "highline", "1.5.2"
 end
