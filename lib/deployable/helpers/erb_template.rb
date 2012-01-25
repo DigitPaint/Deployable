@@ -1,13 +1,15 @@
 require 'erb'
 require 'ostruct'
 
-class Deployable::ErbTemplate
-  def initialize(template)
-    @template = ERB.new(template)
-  end
+module Deployable
+  class ErbTemplate
+    def initialize(template)
+      @template = ERB.new(template)
+    end
   
-  def render(variables)
-    context = OpenStruct.new(:config => variables).instance_eval{ binding }
-    view.result(context)
+    def render(variables)
+      context = OpenStruct.new(:config => variables).instance_eval{ binding }
+      @template.result(context)
+    end
   end
 end
