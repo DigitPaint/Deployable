@@ -138,13 +138,17 @@ class Application
     # Run the before start callback
     run_callback(:start, :before)
     
+    # Make sure we have the required dirs
+    execute "mkdir -p #{self.path + "shared/pid"}"
+    execute "mkdir -p #{self.path + "shared/log"}"    
+    
     # Start the server
     options = []
     options << "--user #{USER}"
     options << "--port #{self.config['passenger']['port']}"
     options << "--environment production"
     options << "--daemonize"
-    options << "--pid-file #{self.path + "passenger.pid"}"
+    options << "--pid-file #{self.path + "shared/pid/passenger.pid"}"
     options << "--log-file /dev/null"
     puts rvm_execute(self.config, "passenger start #{self.path + "current"} #{options.join(" ")}")
     
