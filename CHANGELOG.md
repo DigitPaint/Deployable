@@ -1,4 +1,4 @@
-## 0.0.6
+## 0.0.6 (February 1st, 2012)
 
 * Updated initrd script for passenger to nog log
 * Added custom ERB template handler so it works in ruby 1.9.x and 1.8.x
