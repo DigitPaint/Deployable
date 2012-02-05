@@ -65,13 +65,21 @@ def run!
       Application.new(application,stage).run!(command)
     else
       applications[application].each do |stage|
-        Application.new(application,stage).run!(command)
+        begin
+          Application.new(application,stage).run!(command)
+        rescue StandardError => e
+          puts "ERROR: #{e.message}"
+        end
       end
     end
   else
     applications.sort.each do |application, stages|
       stages.each do |stage|
-        Application.new(application,stage).run!(command)
+        begin
+          Application.new(application,stage).run!(command)
+        rescue StandardError => e
+          puts "ERROR: #{e.message}"
+        end
       end
     end
   end
