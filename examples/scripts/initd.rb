@@ -162,7 +162,7 @@ class Application
     # Run the before :stop callback
     run_callback(:stop, :before)
     
-    puts rvm_execute(self.config, "passenger stop --pid-file #{self.path + "passenger.pid"}")
+    puts rvm_execute(self.config, "passenger stop --pid-file #{self.path + "shared/pid/passenger.pid"}")
     
     # Run the after :stop callback
     run_callback(:stop, :after)    
