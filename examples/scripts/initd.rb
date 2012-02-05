@@ -2,8 +2,11 @@
 
 # chkconfig: - 85 15
 # description:  Passenger Standalone
-require 'yaml'
-require 'pathname'
+
+# ======================================================
+# Version: 0.0.7
+# Date: 2012-02-05
+# ======================================================
 
 # The user the applications run as.
 USER = "admin"
@@ -36,6 +39,9 @@ APPLICATIONS_PATH = USER_HOME_PATH + "/applications/"
 # ======================================================
 # Shouldn't be necessary to change stuff below this line
 # ======================================================
+
+require 'yaml'
+require 'pathname'
 
 # Main start routine.
 def run!
