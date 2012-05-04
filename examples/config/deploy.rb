@@ -19,6 +19,10 @@ set :git_enable_submodules, 1
 set :user, "admin"
 set :use_sudo, false
 
+set :config_files, {
+  "local.rb" => defer{ "#{current_release}/config/local.rb" }
+}
+
 # ======================================
 
 require 'deployable/recipes/default_with_database'
