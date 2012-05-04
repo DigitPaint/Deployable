@@ -17,7 +17,7 @@ Usage
 1. Add the `deployable` gem to your gemfile:
 
         group :development do
-          gem "deployable"
+          gem "deployable", :require => false
         end
 
 2. Config your deploy script (see the `examples/config` directory for some inspiration)
