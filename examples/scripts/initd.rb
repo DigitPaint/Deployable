@@ -2,8 +2,11 @@
 
 # chkconfig: - 85 15
 # description:  Passenger Standalone
-require 'yaml'
-require 'pathname'
+
+# ======================================================
+# Version: 0.0.7
+# Date: 2012-02-05
+# ======================================================
 
 # The user the applications run as.
 USER = "admin"
@@ -37,6 +40,9 @@ APPLICATIONS_PATH = USER_HOME_PATH + "/applications/"
 # Shouldn't be necessary to change stuff below this line
 # ======================================================
 
+require 'yaml'
+require 'pathname'
+
 # Main start routine.
 def run!
   command = ARGV.first
@@ -65,13 +71,21 @@ def run!
       Application.new(application,stage).run!(command)
     else
       applications[application].each do |stage|
-        Application.new(application,stage).run!(command)
+        begin
+          Application.new(application,stage).run!(command)
+        rescue StandardError => e
+          puts "ERROR: #{e.message}"
+        end
       end
     end
   else
     applications.sort.each do |application, stages|
       stages.each do |stage|
-        Application.new(application,stage).run!(command)
+        begin
+          Application.new(application,stage).run!(command)
+        rescue StandardError => e
+          puts "ERROR: #{e.message}"
+        end
       end
     end
   end
@@ -162,7 +176,7 @@ class Application
     # Run the before :stop callback
     run_callback(:stop, :before)
     
-    puts rvm_execute(self.config, "passenger stop --pid-file #{self.path + "passenger.pid"}")
+    puts rvm_execute(self.config, "passenger stop --pid-file #{self.path + "shared/pid/passenger.pid"}")
     
     # Run the after :stop callback
     run_callback(:stop, :after)    
