@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   # specify any dependencies here; for example:
   # s.add_development_dependency "rspec"
-  s.add_runtime_dependency "capistrano", "~> 2.9.0"
+  s.add_runtime_dependency "capistrano", "~> 2.13.0"
   s.add_runtime_dependency "capistrano-ext", "~> 1.2.1"
   
   # This may be deleted in future versions. Needed because in older
