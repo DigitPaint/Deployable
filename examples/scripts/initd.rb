@@ -4,8 +4,8 @@
 # description:  Passenger Standalone
 
 # ======================================================
-# Version: 0.0.7
-# Date: 2012-02-05
+# Version: 0.1.0
+# Date: 2012-12-02
 # ======================================================
 
 # The user the applications run as.
@@ -25,7 +25,8 @@ APPLICATIONS_PATH = USER_HOME_PATH + "/applications/"
 # Example :Server.yml
 #
 # passenger:
-#   port: 10001 # The port number passenger standalone will be ran on
+#   port: 10001   # The port number passenger standalone will be ran on
+#   path: current # The path to the application (default: current)
 # rvm:
 #   rvm_ruby_string: "rubyversion@gemsetname" # The ruby version and gemset RVM will use
 # callbacks: # All callbacks are optional and are references to scripts relative to APPLICATIONS_PATH/APPLICATION_NAME/STAGE
@@ -158,13 +159,14 @@ class Application
     
     # Start the server
     options = []
+    options << File.join(self.path, self.config['passenger']['path'] || "current")
     options << "--user #{USER}"
     options << "--port #{self.config['passenger']['port']}"
     options << "--environment production"
     options << "--daemonize"
     options << "--pid-file #{self.path + "shared/pid/passenger.pid"}"
     options << "--log-file /dev/null"
-    puts rvm_execute(self.config, "passenger start #{self.path + "current"} #{options.join(" ")}")
+    puts rvm_execute(self.config, "passenger start #{options.join(" ")}")
     
     # Run the after start callback
     run_callback(:start, :after)    
