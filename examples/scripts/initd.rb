@@ -5,7 +5,7 @@
 
 # ======================================================
 # Version: 0.1.0
-# Date: 2012-12-02
+# Date: 2013-05-08
 # ======================================================
 
 # The user the applications run as.
@@ -36,6 +36,10 @@ APPLICATIONS_PATH = USER_HOME_PATH + "/applications/"
 #   stop:
 #     before: # Ran before passenger has been stopped
 #     after:  # Ran after passenger has been stopped
+# env:                # Set (or unset) some environment variables just before passenger is started
+#   foo: "bar"        # Set environment variable foo to 'bar'
+#   http_proxy:       # Unsets the http_proxy environment variable
+
 
 # ======================================================
 # Shouldn't be necessary to change stuff below this line
@@ -166,7 +170,7 @@ class Application
     options << "--daemonize"
     options << "--pid-file #{self.path + "shared/pid/passenger.pid"}"
     options << "--log-file /dev/null"
-    puts rvm_execute(self.config, "passenger start #{options.join(" ")}")
+    puts rvm_execute(self.config, self.wrap_with_env("passenger start #{options.join(" ")}"))
     
     # Run the after start callback
     run_callback(:start, :after)    
@@ -182,6 +186,11 @@ class Application
     
     # Run the after :stop callback
     run_callback(:stop, :after)    
+  end
+  
+  def wrap_with_env(command)
+    return command unless self.config["env"].kind_of?(Hash)
+    self.config["env"].collect{|k,v| "#{k}=#{v}"}.join(" ") + " " + command
   end
   
   # Simple output wrapper
