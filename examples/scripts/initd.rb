@@ -169,7 +169,7 @@ class Application
     options << "--environment production"
     options << "--daemonize"
     options << "--pid-file #{self.path + "shared/pid/passenger.pid"}"
-    options << "--log-file /dev/null"
+    options << "--log-file #{self.path + "shared/log/passenger.log"}"
     puts rvm_execute(self.config, self.wrap_with_env("passenger start #{options.join(" ")}"))
     
     # Run the after start callback
